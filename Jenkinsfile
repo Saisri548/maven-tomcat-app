@@ -25,12 +25,13 @@ pipeline {
                 deploy(
                     adapters: [
                         tomcat9(
-                            credentialsId: 'tomcat-credentials',
+                            alternativeDeploymentContext: '',
+                            credentialsId: 'tomcat-crederntials',
                             path: '',
                             url: 'http://172.31.23.139:8080'
                         )
                     ],
-                    contextPath: 'myapp',
+                    contextPath: null,
                     war: 'target/*.war'
                 )
             }
