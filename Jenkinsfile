@@ -49,7 +49,7 @@ pipeline {
                         -o StrictHostKeyChecking=no \
                         target/maven-tomcat-app.war \
                         deploy@172.31.23.139:/opt/tomcat/webapps/
-              
+                   ''' 
             }
         }
     }
