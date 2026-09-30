@@ -40,6 +40,17 @@ pipeline {
                              fingerprint: true
             }
         }
+        stage('Deploy to Tomcat') {
+            steps {
+                sh '''
+                    scp -i ~/.ssh/tomcat_deploy \
+                        -o StrictHostKeyChecking=no \
+                        target/maven-tomcat-app.war \
+                        deploy@172.31.23.139:/opt/tomcat/webapps/
+                '''
+            }
+        }
+    }
     }
 
     post {
