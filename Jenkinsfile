@@ -1,66 +1,50 @@
-
 pipeline {
-
     agent any
 
     tools {
+        maven 'Maven'
         jdk 'Java21'
-        maven 'Maven-3.9.16'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                checkout scm
-            }
-        }
+                git branch: 'main',
+pipeline {
+    agent any
 
-        stage('Verify Environment') {
+    tools {
+        maven 'Maven'
+        jdk 'Java21'
+    }
+
+    stages {
+
+        stage('Build') {
             steps {
-                sh 'java -version'
-                sh 'mvn -version'
+                sh 'mvn clean package'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn clean test'
-            }
-        }
-
-        stage('Build WAR') {
-            steps {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-
-        stage('Archive WAR') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.war',
-                                 fingerprint: true
+                sh 'mvn test'
             }
         }
 
         stage('Deploy to Tomcat') {
             steps {
-                sh '''
-                    scp -i ~/.ssh/tomcat_deploy \
-                        -o StrictHostKeyChecking=no \
-                        target/maven-tomcat-app.war \
-                        deploy@172.31.23.139:/opt/tomcat/webapps/
-                   ''' 
+                deploy adapters: [
+                    tomcat9(
+                        credentialsId: 'tomcat-credentials',
+                        path: '',
+                        url: 'http://172.31.23.139:8080'
+                    )
+                ],
+                contextPath: 'myapp',
+                war: 'target/*.war'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build and deployment completed successfully.'
-        }
-
-        failure {
-            echo 'Build or deployment failed.'
         }
     }
 }
