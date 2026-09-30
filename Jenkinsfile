@@ -26,7 +26,7 @@ pipeline {
                     adapters: [
                         tomcat9(
                             alternativeDeploymentContext: '',
-                            credentialsId: 'tomcat-crederntials',
+                            credentialsId: 'tomcat-credentials',
                             path: '',
                             url: 'http://172.31.23.139:8080'
                         )
