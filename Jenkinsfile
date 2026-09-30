@@ -1,3 +1,4 @@
+
 pipeline {
 
     agent any
@@ -37,9 +38,10 @@ pipeline {
         stage('Archive WAR') {
             steps {
                 archiveArtifacts artifacts: 'target/*.war',
-                             fingerprint: true
+                                 fingerprint: true
             }
         }
+
         stage('Deploy to Tomcat') {
             steps {
                 sh '''
@@ -47,19 +49,18 @@ pipeline {
                         -o StrictHostKeyChecking=no \
                         target/maven-tomcat-app.war \
                         deploy@172.31.23.139:/opt/tomcat/webapps/
-                '''
+              
             }
         }
-    }
     }
 
     post {
         success {
-            echo 'Maven build completed successfully.'
+            echo 'Build and deployment completed successfully.'
         }
 
         failure {
-            echo 'Maven build failed.'
+            echo 'Build or deployment failed.'
         }
     }
 }
